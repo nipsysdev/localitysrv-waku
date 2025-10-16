@@ -41,7 +41,7 @@ const Locality = new protobuf.Type('Locality')
   .add(new protobuf.Field('min_latitude', 8, 'float'))
   .add(new protobuf.Field('max_longitude', 9, 'float'))
   .add(new protobuf.Field('max_latitude', 10, 'float'))
-  .add(new protobuf.Field('file_size', 11, 'u64'))
+  .add(new protobuf.Field('file_size', 11, 'uint64'))
   .add(new protobuf.Field('onion_link', 12, 'string'));
 
 const CountrySearchQuery = new protobuf.Type('CountrySearchQuery')
