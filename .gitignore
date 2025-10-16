@@ -1,0 +1,4 @@
+.vscode
+.kilocode
+node_modules
+dist

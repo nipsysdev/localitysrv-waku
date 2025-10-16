@@ -1,0 +1,28 @@
+{
+  "name": "oakality",
+  "version": "1.0.0",
+  "description": "Waku Network light node for messaging",
+  "main": "src/main.ts",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main.ts"
+  },
+  "keywords": [
+    "waku",
+    "messaging",
+    "decentralized"
+  ],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.8.0",
+  "dependencies": {
+    "@waku/sdk": "^0.0.35",
+    "axios": "^1.12.2",
+    "protobufjs": "^7.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
