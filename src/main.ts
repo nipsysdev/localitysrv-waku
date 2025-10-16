@@ -1,8 +1,8 @@
 import process from "node:process";
 import { createLightNode, Protocols } from "@waku/sdk";
-import protobuf from "protobufjs";
 import axios from "axios";
-import { WAKU_CONTENT_TOPIC, WAKU_BOOTSTRAP_PEERS } from "./constants";
+import protobuf from "protobufjs";
+import { WAKU_BOOTSTRAP_PEERS, WAKU_CONTENT_TOPIC } from "./constants";
 
 process.on("SIGINT", exit);
 process.on("SIGTERM", exit);
@@ -34,7 +34,8 @@ const Locality = new protobuf.Type('Locality')
   .add(new protobuf.Field('id', 1, 'string'))
   .add(new protobuf.Field('name', 2, 'string'))
   .add(new protobuf.Field('country', 3, 'string'))
-  .add(new protobuf.Field('file_size', 4, 'uint64'));
+  .add(new protobuf.Field('file_size', 4, 'uint64'))
+  .add(new protobuf.Field('onion_link', 5, 'uint64'));
 
 const CountrySearchQuery = new protobuf.Type('CountrySearchQuery')
   .add(new protobuf.Field('query_id', 1, 'string'))
@@ -209,7 +210,8 @@ async function handleLocalitySearch(query: any) {
       id: locality.id.toString(),
       name: locality.name,
       country: locality.country,
-      file_size: locality.fileSize || 0
+      file_size: locality.file_size,
+      onion_link: locality.onion_link ?? ''
     }));
     
     const responseMessage = LocalitySearchResponse.create({
