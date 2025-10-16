@@ -35,7 +35,7 @@ const Locality = new protobuf.Type('Locality')
   .add(new protobuf.Field('name', 2, 'string'))
   .add(new protobuf.Field('country', 3, 'string'))
   .add(new protobuf.Field('file_size', 4, 'uint64'))
-  .add(new protobuf.Field('onion_link', 5, 'uint64'));
+  .add(new protobuf.Field('onion_link', 5, 'string'));
 
 const CountrySearchQuery = new protobuf.Type('CountrySearchQuery')
   .add(new protobuf.Field('query_id', 1, 'string'))
