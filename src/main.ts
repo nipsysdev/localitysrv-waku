@@ -34,8 +34,15 @@ const Locality = new protobuf.Type('Locality')
   .add(new protobuf.Field('id', 1, 'string'))
   .add(new protobuf.Field('name', 2, 'string'))
   .add(new protobuf.Field('country', 3, 'string'))
-  .add(new protobuf.Field('file_size', 4, 'uint64'))
-  .add(new protobuf.Field('onion_link', 5, 'string'));
+  .add(new protobuf.Field('placetype', 4, 'string'))
+  .add(new protobuf.Field('latitude', 5, 'float'))
+  .add(new protobuf.Field('longitude', 6, 'float'))
+  .add(new protobuf.Field('min_longitude', 7, 'float'))
+  .add(new protobuf.Field('min_latitude', 8, 'float'))
+  .add(new protobuf.Field('max_longitude', 9, 'float'))
+  .add(new protobuf.Field('max_latitude', 10, 'float'))
+  .add(new protobuf.Field('file_size', 11, 'u64'))
+  .add(new protobuf.Field('onion_link', 12, 'string'));
 
 const CountrySearchQuery = new protobuf.Type('CountrySearchQuery')
   .add(new protobuf.Field('query_id', 1, 'string'))
@@ -210,8 +217,15 @@ async function handleLocalitySearch(query: any) {
       id: locality.id.toString(),
       name: locality.name,
       country: locality.country,
+      placetype: locality.placetype,
+      latitude: locality.latitude,
+      longitude: locality.longitude,
+      min_longitude: locality.min_longitude,
+      min_latitude: locality.min_latitude,
+      max_longitude: locality.max_longitude,
+      max_latitude: locality.max_latitude,
       file_size: locality.file_size,
-      onion_link: locality.onion_link ?? ''
+      onion_link: locality.onion_link
     }));
     
     const responseMessage = LocalitySearchResponse.create({
