@@ -1,5 +1,5 @@
 {
-  "name": "oakality",
+  "name": "localitysrv-waku",
   "version": "1.0.0",
   "description": "Waku Network light node for messaging",
   "main": "src/main.ts",
