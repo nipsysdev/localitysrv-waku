@@ -94,7 +94,6 @@ Constants are defined in `src/constants.ts`:
 
 - `PORT`: HTTP API port (8080)
 - `WAKU_CONTENT_TOPIC`: Content topic for messages (/ash/1/localitysrv/proto)
-- `WAKU_BOOTSTRAP_PEERS`: List of bootstrap peers for network connection
 
 ## Protocol Buffers Schema
 

@@ -2,7 +2,7 @@ import process from "node:process";
 import { createLightNode, Protocols } from "@waku/sdk";
 import axios from "axios";
 import protobuf from "protobufjs";
-import { WAKU_BOOTSTRAP_PEERS, WAKU_CONTENT_TOPIC } from "./constants";
+import { WAKU_CONTENT_TOPIC } from "./constants";
 
 process.on("SIGINT", exit);
 process.on("SIGTERM", exit);
@@ -11,8 +11,7 @@ const BASE_URL = "http://127.0.0.1:8080";
 
 console.log("Creating Waku light node...");
 const wakuNode = await createLightNode({
-  defaultBootstrap: false,
-  bootstrapPeers: WAKU_BOOTSTRAP_PEERS,
+  defaultBootstrap: true,
 });
 
 await wakuNode.start();
