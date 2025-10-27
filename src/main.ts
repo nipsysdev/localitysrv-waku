@@ -7,7 +7,7 @@ import { WAKU_CONTENT_TOPIC } from "./constants";
 process.on("SIGINT", exit);
 process.on("SIGTERM", exit);
 
-const BASE_URL = "http://127.0.0.1:8080";
+const BASE_URL = "http://127.0.0.1:8000";
 
 console.log("Creating Waku light node...");
 const wakuNode = await createLightNode({
@@ -84,22 +84,22 @@ root.add(LocalitySearchResponse);
 console.log("Setting up message subscriptions...");
 await wakuNode.filter.subscribe([decoder], async (wakuMessage: any) => {
   if (!wakuMessage.payload) return;
-  
+
   try {
     console.log("Received message payload");
-    
+
     // Try to decode as CountrySearchQuery first
     try {
       const countryQuery = CountrySearchQuery.decode(wakuMessage.payload) as any;
-      
+
       // Check if both query_id and query_method exist
       if (!countryQuery.query_id || !countryQuery.query_method) {
         console.log("CountrySearchQuery message missing required fields (query_id or query_method)");
         return;
       }
-      
+
       console.log("Decoded CountrySearchQuery with method:", countryQuery.query_method);
-      
+
       // Route based on query_method
       if (countryQuery.query_method === "search_country") {
         console.log("Routing to country search handler");
@@ -116,19 +116,19 @@ await wakuNode.filter.subscribe([decoder], async (wakuMessage: any) => {
       // Not a country query, continue to try locality query
       console.log("Message is not a CountrySearchQuery, trying LocalitySearchQuery");
     }
-    
+
     // Try to decode as LocalitySearchQuery only if CountrySearchQuery failed
     try {
       const localityQuery = LocalitySearchQuery.decode(wakuMessage.payload) as any;
-      
+
       // Check if both query_id and query_method exist
       if (!localityQuery.query_id || !localityQuery.query_method) {
         console.log("LocalitySearchQuery message missing required fields (query_id or query_method)");
         return;
       }
-      
+
       console.log("Decoded LocalitySearchQuery with method:", localityQuery.query_method);
-      
+
       // Route based on query_method
       if (localityQuery.query_method === "search_locality") {
         console.log("Routing to locality search handler");
@@ -156,15 +156,15 @@ async function handleCountrySearch(query: any) {
     if (query.query) params.append('q', query.query);
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
-    
+
     const queryString = params.toString();
     const url = `${BASE_URL}/countries${queryString ? '?' + queryString : ''}`;
-    
+
     console.log(`Making request to: ${url}`);
-    
+
     const response = await axios.get(url);
     console.log("Received response:", response.data);
-    
+
     // Create response message
     const responseData = response.data;
     console.log("Mapping country data:", responseData.data);
@@ -176,7 +176,7 @@ async function handleCountrySearch(query: any) {
         locality_count: country.locality_count
       });
     });
-    
+
     const responseMessage = CountrySearchResponse.create({
       query_id: query.query_id,
       countries,
@@ -184,11 +184,11 @@ async function handleCountrySearch(query: any) {
       page: responseData.pagination?.page || 1,
       total_pages: responseData.pagination?.totalPages || 1
     });
-    
+
     // Encode and send response
     const payload = CountrySearchResponse.encode(responseMessage).finish();
     await wakuNode.lightPush.send(encoder, { payload });
-    
+
     console.log("Sent country search response");
   } catch (error) {
     console.error("Failed to handle country search:", error);
@@ -201,15 +201,15 @@ async function handleLocalitySearch(query: any) {
     if (query.query) params.append('q', query.query);
     if (query.page) params.append('page', query.page.toString());
     if (query.limit) params.append('limit', query.limit.toString());
-    
+
     const queryString = params.toString();
     const url = `${BASE_URL}/countries/${query.country_code}/localities${queryString ? '?' + queryString : ''}`;
-    
+
     console.log(`Making request to: ${url}`);
-    
+
     const response = await axios.get(url);
     console.log("Received response:", response.data);
-    
+
     // Create response message
     const responseData = response.data;
     const localities = (responseData.data || []).map((locality: any) => Locality.create({
@@ -226,7 +226,7 @@ async function handleLocalitySearch(query: any) {
       file_size: locality.file_size,
       onion_link: locality.onion_link
     }));
-    
+
     const responseMessage = LocalitySearchResponse.create({
       query_id: query.query_id,
       localities,
@@ -234,11 +234,11 @@ async function handleLocalitySearch(query: any) {
       page: responseData.pagination?.page || 1,
       total_pages: responseData.pagination?.totalPages || 1
     });
-    
+
     // Encode and send response
     const payload = LocalitySearchResponse.encode(responseMessage).finish();
     await wakuNode.lightPush.send(encoder, { payload });
-    
+
     console.log("Sent locality search response");
   } catch (error) {
     console.error("Failed to handle locality search:", error);
